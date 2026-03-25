@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Janny's Conner</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#f0f2f5;
+  --card:#fff;
+  --text:#111;
+  --accent:#111;
+  --bgImage:none;
+  --headImage:none;
+  --footImage:none;
+}
+
+body{
+  font-family: Times New Roman, sans-serif;
+  margin:0;
+  background:var(--bg);
+  background-image:var(--bgImage);
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  color:var(--text);
+  padding-top: 90px;
+  padding-bottom:100px;
+}
+
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+
+  background: var(--accent);
+  color: #fff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-image: var(--headImage);
+  background-size: cover;
+  background-position: center;
+}
+
+.logo{font-size:60px;font-weight:600;cursor:pointer}
+.header-right{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-right:50px;
+}
+
+#search{padding:10px;border-radius:8px;border:none;width:220px}
+.menu-btn{padding:8px 12px;cursor:pointer}
+.container{padding:20px}
+
+/* SEARCH */
+.search-box{
+  position: relative;
+  width: 220px;
+}
+
+.search-box input{
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+.search-box span{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* hiệu ứng focus đẹp */
+.search-box input:focus{
+  box-shadow:0 0 8px rgba(0,0,0,0.3);
+}
+
+/* ICON SEARCH */
+#searchIcon i{
+  font-size:18px;
+  transition:0.3s;
+  color: var(--text);
+}
+
+#searchIcon:hover i{
+  transform:scale(1.2);
+}
+
+/* CLICK EFFECT */
+#searchIcon i{
+  font-size:18px;
+  transition:0.2s;
+  color: var(--text);
+}
+
+/* hover nhẹ */
+#searchIcon:hover i{
+  transform:scale(1.15);
+}
+
+/* khi click */
+.clicking i{
+  animation: clickPop 0.25s ease;
+}
+
+@keyframes clickPop{
+  0%{ transform:scale(1); }
+  50%{ transform:scale(0.8); } /* co lại */
+  100%{ transform:scale(1.2); } /* bật ra */
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.card{
+  background:var(--card);
+  padding:10px;
+  border-radius:10px;
+  transition:0.3s;
+}
+.card:hover{transform:translateY(-5px)}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.sidebar{
+  position:fixed;
+  top:100px;
+  right:-320px;
+  width:320px;
+  height:calc(88% - 75px);
+  background:#FFFFCC;
+  opacity: 100%;
+  transition:0.3s;
+  overflow:auto;
+  display:flex;
+  justify-content:center;
+  z-index:1500;
+}
+.sidebar.open{right:0}
+
+.menu-box{width:100%;max-width:260px;text-align:center}
+
+.overlay{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:999;
+}
+.overlay.show{display:block}
+
+input,button,textarea,select{
+  padding:12px;
+  margin:6px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  width:100%;
+  box-sizing:border-box;
+}
+
+.hidden{display:none}
+
+/* FOOTER */
+footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:var(--accent);
+  color:#fff;
+  text-align:center;
+  padding:15px 0;
+  font-size:16px;
+
+  background-image: var(--footImage);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+footer a{color:#fff; text-decoration:none;}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo" onclick="goHome()">Janny's Conner</div>
+  <div class="header-right">
+  <div class="search-box">
+  <input id="search" placeholder="Tìm...">
+  <span id="searchIcon">
+   <i class="fa-solid fa-magnifying-glass"></i>
+  </span>
+</div>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  </div>
+</header>
+
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+<div id="sidebar" class="sidebar">
+  <div class="menu-box">
+    <button onclick="goHome(); toggleSidebar()">🏠 Trang chủ</button>
+    <h4>Danh mục</h4>
+    <select id="categoryFilter"></select>
+
+    <hr>
+
+    <div id="authBox">
+      <h4>Đăng nhập Admin</h4>
+      <input id="user" placeholder="User">
+      <input id="pass" type="password" placeholder="Pass">
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="adminBox" class="hidden">
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- PANEL ADMIN: THÊM SẢN PHẨM -->
+    <div id="adminPanel" class="hidden">
+      <h4>Thêm / Sửa sản phẩm</h4>
+      <input id="name" placeholder="Tên">
+      <input type="file" id="fileProduct" accept="image/*">
+      <input id="imgProduct" placeholder="Link ảnh">
+      <img id="preview" style="width:100%;display:none;border-radius:10px;">
+      <input id="link" placeholder="Link sản phẩm">
+      <select id="categoryInput"></select>
+      <textarea id="desc" placeholder="Mô tả"></textarea>
+      <button onclick="addOrUpdate()">Lưu</button>
+      <p id="saveMsg" style="color:green;display:none;font-weight:bold;"></p>
+    </div>
+
+    <!-- THEME ADMIN -->
+    <div id="themeBox" class="hidden">
+      <hr>
+      <h4>HEADER</h4>
+      <button onclick="setTheme('light')">Light</button>
+      <button onclick="setTheme('dark')">Dark</button>
+      <input type="color" id="colorPicker">
+      <button onclick="changeColor()">Đổi màu</button>
+      <input id="headLink" placeholder="Link ảnh header">
+      <input type="file" id="headUpload" accept="image/*">
+      <button onclick="changeHeadLink()">Thay ảnh header</button>
+      
+      <h4>FOOTER</h4>
+      <input id="footLink" placeholder="Link ảnh footer">
+      <input type="file" id="footUpload" accept="image/*">
+
+      <button onclick="changeFootLink()">Thay ảnh footer</button>
+      
+      <hr>
+      
+      <h4>BACKGROUND</h4>
+      <input type="file" id="bgUpload" accept="image/*">
+      <input id="bgLink" placeholder="Link ảnh background">
+      <button onclick="changeBgLink()">Thay ảnh background</button>
+      <button onclick="removeBg()">Xóa nền</button>
+      
+      <hr>
+      
+      <h4>📈THỐNG KÊ</h4>
+      <p id="totalVisit"></p>
+      <p id="todayVisit"></p>
+      <p id="visitUser"></p>
+      <p id="visitAdmin"></p>
+      <button onclick="resetStats()">Reset thống kê</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="products" class="grid"></div>
+</div>
+
+<footer>
+  Email: <a href="mailto:example@gmail.com">example@gmail.com</a> | 
+  SĐT: <a href="tel:0123456789">0123456789</a>
+</footer>
+
+<script>
+/* DOM */
+const productsDiv = document.getElementById('products')
+const search = document.getElementById('search')
+const searchIcon = document.getElementById('searchIcon')
+const categoryFilter = document.getElementById('categoryFilter')
+const categoryInput = document.getElementById('categoryInput')
+const fileProduct = document.getElementById('fileProduct')
+const preview = document.getElementById('preview')
+const sidebar = document.getElementById('sidebar')
+const overlay = document.getElementById('overlay')
+const authBox = document.getElementById('authBox')
+const adminBox = document.getElementById('adminBox')
+const adminPanel = document.getElementById('adminPanel')
+const themeBox = document.getElementById('themeBox')
+const colorPicker = document.getElementById('colorPicker')
+const bgUpload = document.getElementById('bgUpload')
+const headLinkInput = document.getElementById('headLink')
+const footLinkInput = document.getElementById('footLink')
+const bgLinkInput = document.getElementById('bgLink')
+
+const nameInput = document.getElementById('name')
+const imgInput = document.getElementById('imgProduct')
+const linkInput = document.getElementById('link')
+const descInput = document.getElementById('desc')
+const saveMsg = document.getElementById('saveMsg')
+
+/* DATA */
+let products = JSON.parse(localStorage.getItem('products') || '[]')
+let users = JSON.parse(localStorage.getItem('users') || '[{"u":"admin","p":"123456"}]')
+let categories = JSON.parse(localStorage.getItem('categories') || '["Quần Áo","Váy Đầm","Phụ kiện","Gia dụng","Khác"]')
+let isAdmin = localStorage.getItem('isAdmin') === 'true'
+let currentCategory = 'all'
+let editId = null
+
+/* THỐNG KÊ */
+let stats = JSON.parse(localStorage.getItem('stats') || '{}')
+
+// lấy ngày hôm nay
+let today = new Date().toLocaleDateString()
+
+// nếu chưa có thì tạo mới
+if(!stats.total) stats.total = 0
+if(!stats.user) stats.user = 0
+if(!stats.admin) stats.admin = 0
+if(!stats.todayDate) stats.todayDate = today
+if(!stats.todayCount) stats.todayCount = 0
+
+// nếu sang ngày mới → reset today
+if(stats.todayDate !== today){
+  stats.todayDate = today
+  stats.todayCount = 0
+}
+
+// tăng lượt truy cập
+stats.total++
+stats.todayCount++
+
+if(isAdmin){
+  stats.admin++
+}else{
+  stats.user++
+}
+
+// lưu lại
+localStorage.setItem('stats', JSON.stringify(stats))
+
+let visitUser = parseInt(localStorage.getItem('visitUser') || 0)
+let visitAdmin = parseInt(localStorage.getItem('visitAdmin') || 0)
+if(isAdmin){
+  visitAdmin++
+  localStorage.setItem('visitAdmin', visitAdmin)
+}else{
+  visitUser++
+  localStorage.setItem('visitUser', visitUser)
+}
+
+/* SIDEBAR */
+function toggleSidebar(){sidebar.classList.toggle('open');overlay.classList.toggle('show')}
+function goHome(){
+  currentCategory = 'all';
+  search.value = '';
+
+  render();
+
+  categoryFilter.value = 'all';
+}
+
+/* LOGIN */
+function login(){
+  let ok = users.find(x=>x.u===user.value && x.p===pass.value)
+  if(ok){localStorage.setItem('isAdmin','true');location.reload()}else alert('Sai tài khoản')}
+function logout(){localStorage.removeItem('isAdmin');location.reload()}
+
+/* THỐNG KÊ */
+function updateStats(){
+  document.getElementById('totalVisit').innerText = 'Tổng: ' + stats.total
+  document.getElementById('todayVisit').innerText = 'Hôm nay: ' + stats.todayCount
+  document.getElementById('visitUser').innerText = 'User: ' + stats.user
+  document.getElementById('visitAdmin').innerText = 'Admin: ' + stats.admin
+}
+
+/* CATEGORY */
+function renderCategories(){
+  categoryFilter.innerHTML='<option value="all">Categories</option>'
+  categoryInput.innerHTML=''
+  categories.forEach(c=>{
+    categoryFilter.innerHTML+=`<option value="${c}">${c}</option>`
+    categoryInput.innerHTML+=`<option value="${c}">${c}</option>`
+  })
+  categoryInput.innerHTML+=`<option value="new">+ Tạo mới</option>`
+  categoryFilter.value = currentCategory;
+}
+categoryFilter.onchange=function(){currentCategory=this.value;render()}
+
+/* OPEN LINK */
+function openLink(link){if(link) window.open(link,'_blank');else alert('Chưa có link')}
+
+/* RENDER PRODUCTS */
+function render(){
+  let keyword = search.value.toLowerCase()
+  productsDiv.innerHTML=''
+
+products.filter(p => {
+  let keywordLower = keyword.toLowerCase()
+
+  let nameMatch = (p.name || '').toLowerCase().includes(keywordLower)
+  let categoryMatch = (p.category || '').toLowerCase().includes(keywordLower)
+
+  let matchSearch = nameMatch || categoryMatch
+
+  let matchCategory = currentCategory === 'all' || p.category === currentCategory
+
+  return matchSearch && matchCategory
+})
+  .forEach(p=>{
+  productsDiv.innerHTML += `
+  <div class="card">
+    <b>#${p.id}</b>
+
+    ${
+      editId === p.id ? `
+      <input id="edit-name-${p.id}" value="${p.name}">
+      <input id="edit-img-${p.id}" value="${p.img}">
+      <input id="edit-link-${p.id}" value="${p.link || ''}">
+      
+      <select id="edit-cat-${p.id}">
+        ${categories.map(c => `
+          <option value="${c}" ${c===p.category?'selected':''}>${c}</option>
+        `).join('')}
+      </select>
+
+      <textarea id="edit-desc-${p.id}">${p.desc || ''}</textarea>
+
+      <button onclick="saveEdit(${p.id})">Lưu</button>
+      <button onclick="cancelEdit()">Hủy</button>
+      `
+      :
+      `
+      <img src="${p.img}" onclick="openLink('${p.link}')"
+        onerror="this.src='https://via.placeholder.com/200'">
+
+      <h3>${p.name}</h3>
+      <p><i>${p.category}</i></p>
+      <p>${p.desc||''}</p>
+
+      ${isAdmin?`
+      <button onclick="event.stopPropagation(); startEdit(${p.id})">Sửa</button>
+      <button onclick="event.stopPropagation(); deleteProduct(${p.id})">Xóa</button>
+      `:''}
+      `
+    }
+  </div>`
+})
+
+  renderCategories()
+}
+
+/* UPLOAD IMAGE PRODUCT */
+fileProduct.onchange=e=>{
+  let file=e.target.files[0];if(!file)return
+  let reader=new FileReader()
+  reader.onload=ev=>{
+    imgInput.value=ev.target.result
+    preview.src=ev.target.result
+    preview.style.display='block'
+  }
+  reader.readAsDataURL(file)
+}
+
+/* MESSAGE */
+function showMsg(text){saveMsg.innerText=text;saveMsg.style.display='block';setTimeout(()=>saveMsg.style.display='none',2000)}
+
+/* ADD / UPDATE PRODUCT */
+function addOrUpdate(){
+  let nameVal=nameInput.value.trim()
+  let imgVal=imgInput.value.trim()
+  let linkVal=linkInput.value.trim()
+  let catVal=categoryInput.value
+  let descVal=descInput.value.trim()
+  if(!nameVal||!imgVal){alert('Thiếu dữ liệu');return}
+  if(catVal==='new'){let newCat=prompt('Tên category:');if(newCat){categories.push(newCat);localStorage.setItem('categories',JSON.stringify(categories));catVal=newCat}else catVal='Khác'}
+  if(editId!==null){let index=products.findIndex(p=>p.id===editId);if(index!==-1) products[index]={id:editId,name:nameVal,img:imgVal,link:linkVal,category:catVal,desc:descVal};showMsg('✏️ Đã cập nhật');editId=null}
+  else{let id = products.length ? Math.max(...products.map(p=>p.id))+1 : 1;products.push({id,name:nameVal,img:imgVal,link:linkVal,category:catVal,desc:descVal});showMsg('✅ Đã thêm')}
+  localStorage.setItem('products',JSON.stringify(products))
+  nameInput.value='';imgInput.value='';linkInput.value='';descInput.value='';preview.style.display='none';fileProduct.value=''
+  render()
+}
+
+/* EDIT / DELETE */
+function startEdit(id){
+  editId = id;
+  render();
+}
+
+function cancelEdit(){
+  editId = null;
+  render();
+}
+
+function saveEdit(id){
+  let p = products.find(x => x.id === id);
+  if(!p) return;
+
+  p.name = document.getElementById(`edit-name-${id}`).value;
+  p.img = document.getElementById(`edit-img-${id}`).value;
+  p.link = document.getElementById(`edit-link-${id}`).value;
+  p.category = document.getElementById(`edit-cat-${id}`).value;
+  p.desc = document.getElementById(`edit-desc-${id}`).value;
+
+  localStorage.setItem('products', JSON.stringify(products));
+
+  editId = null;
+  render();
+}
+
+/* ===== THEME ===== */
+function setVar(k,v){document.documentElement.style.setProperty(k,v)}
+function setTheme(mode){if(mode==='dark'){setVar('--bg','#111');setVar('--text','#fff')}else{setVar('--bg','#f0f2f5');setVar('--text','#111')} localStorage.setItem('themeMode',mode)}
+function changeColor(){setVar('--accent',colorPicker.value);localStorage.setItem('themeColor',colorPicker.value)}
+function preset(type){if(type==='shopee'){setTheme('light');setVar('--accent','#ee4d2d')} if(type==='tiktok'){setTheme('dark');setVar('--accent','#ff0050')}}
+
+bgUpload.onchange=e=>{let file=e.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=ev=>{setVar('--bgImage',`url(${ev.target.result})`);localStorage.setItem('bgImage',`url(${ev.target.result})`)};reader.readAsDataURL(file)}
+function removeBg(){setVar('--bgImage','none');localStorage.removeItem('bgImage')}
+function changeHeadLink(){let link=headLinkInput.value.trim();if(link){setVar('--headImage',`url(${link})`);localStorage.setItem('headImage',`url(${link})`)}} 
+function changeFootLink(){
+  let link = footLinkInput.value.trim()
+  if(link){
+    setVar('--footImage', `url(${link})`)
+    localStorage.setItem('footImage', `url(${link})`)
+  }
+}
+
+function changeBgLink(){let link=bgLinkInput.value.trim();if(link){setVar('--bgImage',`url(${link})`);localStorage.setItem('bgImage',`url(${link})`)}} 
+
+function loadTheme(){
+  let mode=localStorage.getItem('themeMode')
+  let color=localStorage.getItem('themeColor')
+  let bg=localStorage.getItem('bgImage')
+  let head=localStorage.getItem('headImage')
+  let foot = localStorage.getItem('footImage')
+  if(mode)setTheme(mode)
+  if(color){setVar('--accent',color);colorPicker.value=color}
+  if(bg)setVar('--bgImage',bg)
+  if(head)setVar('--headImage',head)
+  if(foot) setVar('--footImage', foot)
+
+}
+
+// upload header
+document.getElementById('headUpload').onchange = e => {
+  let file = e.target.files[0];
+  if(!file) return;
+
+  let reader = new FileReader();
+  reader.onload = ev => {
+    setVar('--headImage', `url(${ev.target.result})`);
+    localStorage.setItem('headImage', `url(${ev.target.result})`);
+  };
+  reader.readAsDataURL(file);
+};
+
+// upload footer
+document.getElementById('footUpload').onchange = e => {
+  let file = e.target.files[0];
+  if(!file) return;
+
+  let reader = new FileReader();
+  reader.onload = ev => {
+    setVar('--footImage', `url(${ev.target.result})`);
+    localStorage.setItem('footImage', `url(${ev.target.result})`);
+  };
+  reader.readAsDataURL(file);
+};
+
+function resetStats(){
+  if(confirm('Reset toàn bộ thống kê?')){
+    localStorage.removeItem('stats')
+    location.reload()
+  }
+}
+
+/* SEARCH REALTIME */
+search.addEventListener("input", () => {
+  render();
+})
+
+/* CLICK ICON */
+searchIcon.onclick = () => {
+  searchIcon.classList.add("clicking");
+
+  render();
+
+  setTimeout(()=>{
+    searchIcon.classList.remove("clicking");
+  },250);
+}
+
+// ENTER để login
+document.getElementById("pass").addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
+
+/* INIT */
+window.onload=()=>{
+  loadTheme()
+  render()
+  updateStats()
+
+  if(isAdmin){
+    authBox.classList.add('hidden')      // ẩn login
+    adminBox.classList.remove('hidden')  // hiện logout
+    adminPanel.classList.remove('hidden')
+    themeBox.classList.remove('hidden')
+  }else{
+    authBox.classList.remove('hidden')   // hiện login
+    adminBox.classList.add('hidden')     // ẩn logout
+  }
+}
+</script>
+</body>
+</html>
